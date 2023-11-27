@@ -1,0 +1,26 @@
+name: audit-dependencies
+
+on:
+  workflow_call:
+    secrets:
+      ORG_NPM_INSTALL:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout github repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: permissions
+        run: |
+          git config --global url."https://${{secrets.ORG_NPM_INSTALL}}@github.com/".insteadOf ssh://github.com/
+
+      - name: "Run npm audit"
+        id: npmaudit
+        run: npm audit
+        continue-on-error: false
