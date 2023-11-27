@@ -1,0 +1,73 @@
+name: azure-docker-build-push
+on:
+    workflow_call:
+        inputs:
+            tag:
+                required: true
+                type: string
+        secrets:
+            ORG_NPM_INSTALL:
+                required: true
+            ORG_AZURE_CREDENTIALS:
+                required: true
+            ORG_REGISTRY_USERNAME:
+                required: true
+            ORG_REGISTRY_PASSWORD:
+                required: true
+jobs:
+    call-checkmycode:
+        uses: athleticim/builder-helper/.github/workflows/checkmycode-helper.yml@main
+        secrets:
+          ORG_NPM_INSTALL : ${{secrets.ORG_NPM_INSTALL}} 
+    buidl:
+        needs: [call-checkmycode]
+        runs-on: ubantu-latest
+        steps:
+            - name: 'checkout gitHub Actions'
+              uses: actions/checkout@main
+              with:
+               persist-credentials: false
+
+            - name: isntall pcregrep
+              run: |
+                sudo apt-get update
+                sudo apt install pcregrep
+               
+            - name: setup Node
+              uses: actions/setup-node@v3
+              with:
+                node-version: '18.x'
+            
+            - name: setup latest NPM
+              run: npm install -g npm@latest
+
+            - name: set permission
+              run: |
+               git config --global url."https://${{secrets.ORG_NPM_INSTALL}}@github.com/".insteadOf ssh://github.com/
+
+            - name: get dependencies
+              run : npm ci --production
+
+            - uses: elstudio/action-install-azure-cli@v1
+
+            - name: Azure login
+              uses: azure/login@v1
+              with:
+                creds: ${{secrets.ORG_AZURE_CREDENTIALS}}
+            
+            - name: azure login
+              uses: azure/docker-login@v1
+              with:
+                login-server: developmentregistry0.azurecr.io
+                username: ${{ secrets.ORG_REGISTRY_USERNAME}}
+                password: ${{secrets.ORG_REGISTRY_PASSWORD}}
+
+            - name: update tag, name and build push
+              run: |
+                  export CONTAINER_NAME=$(cat docker-compose.yml | pcregrep -o1 'container_name: ([^\s]+)')
+                  export DOCKER_TAG=$(basename ${{ inputs.tag }})
+                  find . -name '*function.json' -print0 | xargs -0 sed -i 's/function/anonymous/g' || true
+                  docker build . -t developmentregistry0.azurecr.io/${CONTAINER_NAME}:$DOCKER_TAG
+                  docker push developmentregistry0.azurecr.io/${CONTAINER_NAME}:$DOCKER_TAG
+                  echo "CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
+                  echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV 
