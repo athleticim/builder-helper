@@ -1,0 +1,35 @@
+name: Run-checkmycode
+
+on:
+  workflow_call:
+    secrets:
+      ORG_NPM_INSTALL:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout github repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: setup-latest-npm
+        run: npm install -g npm@latest
+
+      - name: permissions
+        run: |
+          git config --global url."https://${{secrets.ORG_NPM_INSTALL}}@github.com/".insteadOf ssh://github.com/
+
+      - name: getdependencies
+        run: npm ci
+
+      - name: checkmycode
+        run: bash checkmycode.sh
