@@ -21,7 +21,7 @@ jobs:
           ORG_NPM_INSTALL : ${{secrets.ORG_NPM_INSTALL}} 
     build:
       needs: [call-checkmycode]
-      runs-on: ubantu-latest
+      runs-on: ubuntu-latest
       steps:
             - name: 'checkout gitHub Actions'
               uses: actions/checkout@main
