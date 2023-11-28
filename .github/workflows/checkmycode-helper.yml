@@ -3,7 +3,8 @@ name: Run-checkmycode
 on:
   workflow_call:
     secrets:
-      ORG_NPM_INSTALL: required
+      ORG_NPM_INSTALL: 
+       required: true
 
 jobs:
   build:
