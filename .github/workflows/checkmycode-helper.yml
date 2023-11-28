@@ -3,8 +3,7 @@ name: Run-checkmycode
 on:
   workflow_call:
     secrets:
-      ORG_NPM_INSTALL:
-        required: true
+      ORG_NPM_INSTALL: required
 
 jobs:
   build:
@@ -27,6 +26,8 @@ jobs:
       - name: permissions
         run: |
           git config --global url."https://${{ secrets.ORG_NPM_INSTALL }}@github.com/".insteadOf ssh://github.com/
+          echo "ORG_NPM_INSTALL: ${{ secrets.ORG_NPM_INSTALL }}"
+
       - name: getdependencies
         run: npm ci
 
