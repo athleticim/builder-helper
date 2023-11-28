@@ -19,10 +19,10 @@ jobs:
         uses: athleticim/builder-helper/.github/workflows/checkmycode-helper.yml@main
         secrets:
           ORG_NPM_INSTALL : ${{secrets.ORG_NPM_INSTALL}} 
-    buidl:
-        needs: [call-checkmycode]
-        runs-on: ubantu-latest
-        steps:
+    build:
+      needs: [call-checkmycode]
+      runs-on: ubantu-latest
+      steps:
             - name: 'checkout gitHub Actions'
               uses: actions/checkout@main
               with:
