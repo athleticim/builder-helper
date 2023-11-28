@@ -25,7 +25,7 @@ jobs:
 
       - name: permissions
         run: |
-          git config --global url."https://${{ secrets.ORG_NPM_INSTALL }}@github.com/".insteadOf ssh://github.com/
+          git config --global url."https://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@github.com/".insteadOf ssh://github.com/
           echo "ORG_NPM_INSTALL: ${{ secrets.ORG_NPM_INSTALL }}"
 
       - name: getdependencies
