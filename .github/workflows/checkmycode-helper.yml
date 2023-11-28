@@ -24,10 +24,14 @@ jobs:
       - name: setup-latest-npm
         run: npm install -g npm@latest
 
-      - name: permissions
-        run: |
-          git config --global url."https://${{ secrets.ORG_NPM_INSTALL }}@github.com/".insteadOf ssh://github.com/
-          
+      - uses: webfactory/ssh-agent@v0.2.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+     
+      # - name: permissions
+      #   run: |
+      #     git config --global url."https://${{ secrets.ORG_NPM_INSTALL }}@github.com/".insteadOf ssh://github.com/
+
       - name: getdependencies
         run: npm ci
 
