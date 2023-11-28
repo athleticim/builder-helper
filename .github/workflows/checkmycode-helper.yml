@@ -26,9 +26,9 @@ jobs:
 
       - name: permissions
         run: |
-           git config --global user.name=AcademixPro
-           git config --global user.email=academixpro0@gmail.com
-           git config --global user.pssword=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
+           git config --global user.name "AcademixPro"
+           git config --global user.email "academixpro0@gmail.com"
+           git config --global user.pssword "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"
           
       - name: getdependencies
         run: npm ci
