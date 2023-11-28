@@ -49,7 +49,12 @@ jobs:
               run : npm ci --production
 
             - uses: elstudio/action-install-azure-cli@v1
-
+           
+            - name: Debug Information
+              run:  |
+                   echo "Logged in successfully"
+                   echo "Subscription ID: ${{secrets.ORG_AZURE_CREDENTIALS.subscriptionId}}"
+              
             - name: Azure login
               uses: azure/login@v1
               with:
