@@ -26,8 +26,8 @@ jobs:
 
       - name: permissions
         run: |
-          git config --global url."https://${{secrets.ORG_NPM_INSTALL}}@github.com/".insteadOf ssh://github.com/
-          
+          git config --global url."https://${{secrets.GITHUB_TOKEN}}@github.com/".insteadOf ssh://github.com/
+
       - name: getdependencies
         run: npm ci
 
